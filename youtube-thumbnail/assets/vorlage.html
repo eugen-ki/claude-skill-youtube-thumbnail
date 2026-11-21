@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>YouTube-Thumbnail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@800&display=swap" rel="stylesheet">
+<style>
+/* ===== Nur hier Farben und Schrift anpassen ===== */
+:root {
+  --grund: #0d1b2a;      /* Hintergrund, wenn kein Foto da ist */
+  --text: #ffffff;       /* Textfarbe */
+  --akzent: #ffd23f;     /* Farbe für das wichtigste Wort, Pfeil, Kreis */
+  --gut: #2ecc71;        /* Grün = gut (Nachher) */
+  --schlecht: #e74c3c;   /* Rot = schlecht (Vorher) */
+  --f-text: "Anton", "Impact", "Arial Black", sans-serif;
+}
+/* ================================================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--grund); }
+.tn { display: none; position: relative; width: 1280px; height: 720px; overflow: hidden;
+  background: var(--grund) center / cover no-repeat; }
+.tn:target, .tn.zeigen { display: block; }
+/* Person oder Objekt als freigestelltes PNG (optional) */
+.figur { position: absolute; bottom: 0; height: 100%; z-index: 2; filter: drop-shadow(0 0 28px rgba(0,0,0,.7)); }
+.figur.links { left: 0; } .figur.rechts { right: 0; }
+/* Text: immer in der oberen Hälfte, nie unten rechts */
+.text { position: absolute; top: 48px; z-index: 3; font-family: var(--f-text); color: var(--text);
+  text-transform: uppercase; line-height: .92; font-size: 150px; letter-spacing: 1px;
+  -webkit-text-stroke: 4px rgba(0,0,0,.85); paint-order: stroke fill; text-shadow: 0 8px 30px rgba(0,0,0,.6); }
+.text.links { left: 56px; max-width: 700px; } .text.rechts { right: 56px; max-width: 700px; text-align: right; }
+.text.mitte { left: 0; right: 0; text-align: center; padding: 0 60px; }
+.text em { font-style: normal; color: var(--akzent); }
+/* geteiltes Bild: links vorher, rechts nachher */
+.haelfte { position: absolute; top: 0; bottom: 0; width: 50%; background: center / cover no-repeat; z-index: 1; }
+.haelfte.a { left: 0; } .haelfte.b { right: 0; }
+.trenner { position: absolute; z-index: 2; left: 636px; top: 0; bottom: 0; width: 8px; background: #fff; }
+.etikett { position: absolute; z-index: 3; top: 40px; font-family: var(--f-text); font-size: 64px; padding: 6px 22px; color: #fff; }
+.etikett.a { left: 40px; background: var(--schlecht); } .etikett.b { right: 40px; background: var(--gut); }
+/* Text unter den Etiketten der geteilten Variante, je Hälfte */
+.text.halb { top: 150px; max-width: 560px; font-size: 120px; } .text.halb.links { left: 40px; } .text.halb.rechts { right: 40px; }
+/* Hilfsformen */
+.pfeil { position: absolute; z-index: 4; width: 220px; height: 26px; background: var(--akzent); border-radius: 13px; transform-origin: left center; }
+.pfeil::after { content: ""; position: absolute; right: -30px; top: -27px; border-left: 50px solid var(--akzent); border-top: 40px solid transparent; border-bottom: 40px solid transparent; }
+.kreis { position: absolute; z-index: 4; border: 14px solid var(--akzent); border-radius: 50%; }
+/* Prüfhilfe: zeigt die Zeitangabe unten rechts und die TV-Linie */
+body.pruefen .tn::after { content: "12:34"; position: absolute; right: 14px; bottom: 14px; z-index: 9; background: rgba(0,0,0,.8);
+  color: #fff; font: 700 30px var(--f-text); padding: 2px 10px; border-radius: 6px; }
+body.pruefen .tn::before { content: ""; position: absolute; left: 0; right: 0; top: 360px; z-index: 9; border-top: 4px dashed #ff00ff; }
+</style>
+</head>
+<body>
+<!--
+  So funktioniert die Vorlage:
+  - Jede Variante ist eine <section class="tn" id="v1">, id="v2" ...
+  - Hintergrundfoto: style="background-image:url(bilder/hintergrund.jpg)" an der section (PNG geht genauso).
+    Falscher Ausschnitt? background-position ergänzen, z. B. "center 70%" (tiefer) oder "left center".
+  - Geteilte Variante: je Hälfte ein eigenes Bild an .haelfte.a und .haelfte.b, oder dasselbe Bild mit anderer background-position.
+  - Freigestellte Person: <img class="figur rechts" src="bilder/ich.png">.
+  - Text: höchstens 4 Wörter in <div class="text links|rechts|mitte">, das wichtigste Wort in <em>.
+  - Bild speichern: Browser im Kopfmodus mit Adresse thumbnail.html#v1 (1280 x 720).
+  - Prüfansicht mit Zeitangabe und TV-Linie: thumbnail.html?pruefen#v1
+-->
+
+<!-- V1: Ergebnis groß, Text links oben (ohne Gesicht) -->
+<section class="tn" id="v1">
+  <div class="text links">NIE MEHR <em>ABENDS</em></div>
+</section>
+
+<!-- V2: Person rechts mit Emotion, Text links oben -->
+<section class="tn" id="v2">
+  <div class="text links">ENDLICH <em>FREI</em></div>
+</section>
+
+<!-- V3: Vorher links, Nachher rechts -->
+<section class="tn" id="v3">
+  <div class="haelfte a"></div><div class="haelfte b"></div><div class="trenner"></div>
+  <div class="etikett a">VORHER</div><div class="etikett b">NACHHER</div>
+  <div class="text halb links">1 STD</div><div class="text halb rechts"><em>5 MIN</em></div>
+</section>
+
+<script>
+if (location.search.includes("pruefen")) document.body.classList.add("pruefen");
+if (!location.hash) document.querySelector(".tn").classList.add("zeigen");
+// zu lange Texte verkleinern, bis sie passen; 340 px lässt Abstand zur Mitte (360 px), damit der Text in der oberen Hälfte bleibt
+document.fonts.ready.then(() => document.querySelectorAll(".text").forEach(el => {
+  let g = parseFloat(getComputedStyle(el).fontSize);
+  while ((el.scrollWidth > el.clientWidth || el.offsetTop + el.offsetHeight > 340) && g > 60) el.style.fontSize = (g -= 4) + "px";
+}));
+</script>
+</body>
+</html>
